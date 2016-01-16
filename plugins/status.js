@@ -54,6 +54,9 @@ module.exports = function(req, res, next) {
           return !!line.trim();
         });
 
+        var hasBranchName = lines[0].match(/^##\s+(.*)?\.\.\./);
+        var branchName = hasBranchName ? hasBranchName[1] : '';
+
         //remove the branch info so it isn't counted as a change
         var branchInfo = lines.shift();
 
@@ -67,8 +70,8 @@ module.exports = function(req, res, next) {
           style(dirname, 'gray') +
           style(path.basename(cwd), 'white') + pad(dirname + path.basename(cwd), pathMaxLen) + ' ' +
           style(modified, (lines.length > 0 ? 'red' : 'green')) + pad(modified, 14) +
-          behind + pad(behind, 14) +
-          tags.map(function(s) { return '@' + s; }).join(' ')
+          branchName + pad(branchName, 24) +
+          behind + pad(behind, 14)
         );
         if (err !== null) {
           console.log('exec error: ' + err);
